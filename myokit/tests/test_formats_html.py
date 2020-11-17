@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
-# Tests some methods from myokit.mxml
+# Tests the HTML support functions.
 #
 # This file is part of Myokit.
 # See http://myokit.org for copyright, sharing, and licensing details.
@@ -10,17 +10,14 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-import myokit
+import myokit.formats.html
 
 
-class AsciifierTest(unittest.TestCase):
-    """
-    Tests the method to convert html to ascii.
-    """
-    def test_asciify(self):
-        html = """
+html = """
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml"
+      lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -54,8 +51,10 @@ class AsciifierTest(unittest.TestCase):
             <li><a href="http://myokit.org/download">Two</a></li>
         </ul>
         <h3>Resources</h3>
+        This has a<xhtml:br />
+        line break.
         <ol>
-            <li>Numbered A.</li>
+            <xhtml:li>Numbered A.</xhtml:li>
             <li><em>Numbered B is italic.</em></li>
             <li>
                 <ul>
@@ -70,7 +69,8 @@ class AsciifierTest(unittest.TestCase):
     </div>
 </body>
 </html>"""
-        ascii = """
+
+ascii = """
 ===============================================================================
 Myokit
 ===============================================================================
@@ -97,6 +97,9 @@ Software
 Resources
 ...............................................................................
 
+This has a
+line break.
+
   1 Numbered A.
   2 *Numbered B is italic.*
   3
@@ -110,15 +113,23 @@ Resources
 * This item had no list :(
 """.strip()
 
+
+class AsciifierTest(unittest.TestCase):
+    """
+    Tests the method to convert html to ascii.
+    """
+    def test_asciify(self):
+
         # Compare line by line
-        ascii = iter(ascii.splitlines())
-        for line1 in myokit.mxml.html2ascii(html).splitlines():
+        asc = iter(ascii.splitlines())
+        for line1 in myokit.formats.html.html2ascii(html).splitlines():
             # Next line will raise exception if the result is longer than ascii
-            line2 = next(ascii)
+            line2 = next(asc)
             # Check if lines are equal
             self.assertEqual(line1, line2)
+
         # Next line will raise exception if ascii is longer than the result
-        self.assertRaises(StopIteration, next, ascii)
+        self.assertRaises(StopIteration, next, asc)
 
 
 if __name__ == '__main__':

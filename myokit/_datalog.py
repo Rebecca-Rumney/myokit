@@ -192,13 +192,13 @@ class DataLog(OrderedDict):
         """
         Returns a copy of this log as a :class:`DataBlock1d`.
         """
-        return myokit.DataBlock1d.from_DataLog(self)
+        return myokit.DataBlock1d.from_log(self)
 
     def block2d(self):
         """
         Returns a copy of this log as a :class:`DataBlock2d`.
         """
-        return myokit.DataBlock2d.from_DataLog(self)
+        return myokit.DataBlock2d.from_log(self)
 
     def clone(self, numpy=False):
         """
@@ -844,7 +844,7 @@ class DataLog(OrderedDict):
         ``tmax``. If no value for ``tmax`` is given the final value in the log
         is used.
 
-        *This function requires scipy to be installed.* It works by
+        This method works by
 
           1. Finding the indices corresponding to ``tmin`` and ``tmax``.
           2. Creating a spline interpolant with all the data from ``tmin`` to
